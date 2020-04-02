@@ -126,9 +126,9 @@ const module_info_t module_info = {
 
 
 /**
- * 4 additional bytes for the product_id and product_version values.
+ * 6 additional bytes for the product_id and product_version values.
  */
-#define MODULE_INFO_SUFFIX_EXTRA 4
+#define MODULE_INFO_SUFFIX_EXTRA 6
 
 // These are placed in a non-default (.rodata) section because they come after all the .rodata is included in the linker scripts.
 // Doing it like this is simpler than setting up exclusion rules.

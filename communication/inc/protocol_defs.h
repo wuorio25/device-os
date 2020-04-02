@@ -5,13 +5,15 @@
 
 #include "system_error.h"
 
-typedef uint16_t product_id_t;
+typedef uint16_t product_id_low_t;
+typedef uint16_t product_id_high_t;
+typedef uint32_t product_id_t;
 typedef uint16_t product_firmware_version_t;
 
 namespace particle { namespace protocol {
 
 #ifndef PRODUCT_ID
-#define PRODUCT_ID (0xffff)
+#define PRODUCT_ID (0xffffffff)
 #endif
 
 #ifndef PRODUCT_FIRMWARE_VERSION

@@ -148,9 +148,9 @@ PARTICLE_STATIC_ASSERT(CommunicationHandlers_size, sizeof(CommunicationsHandlers
 
 typedef struct {
     uint16_t size;
-    product_id_t product_id;
+    product_id_low_t product_id_low;
     product_firmware_version_t product_version;
-    uint16_t reserved;  // make the padding explicit
+    product_id_high_t product_id_high;
 } product_details_t;
 
 PARTICLE_STATIC_ASSERT(product_details_size, sizeof(product_details_t)==8);
@@ -176,6 +176,10 @@ typedef struct {
 
 typedef completion_handler_data spark_protocol_send_event_data;
 
+typedef struct {
+    product_id_t product_id;
+} product_id_ext_t;
+
 bool spark_protocol_send_event(ProtocolFacade* protocol, const char *event_name, const char *data,
                 int ttl, uint32_t flags, void* reserved);
 bool spark_protocol_send_subscription_device(ProtocolFacade* protocol, const char *event_name, const char *device_id, void* reserved=NULL);
@@ -184,7 +188,7 @@ bool spark_protocol_add_event_handler(ProtocolFacade* protocol, const char *even
 bool spark_protocol_send_time_request(ProtocolFacade* protocol, void* reserved=NULL);
 void spark_protocol_send_subscriptions(ProtocolFacade* protocol, void* reserved=NULL);
 void spark_protocol_remove_event_handlers(ProtocolFacade* protocol, const char *event_name, void* reserved=NULL);
-void spark_protocol_set_product_id(ProtocolFacade* protocol, product_id_t product_id, unsigned int param = 0, void* reserved = NULL);
+void spark_protocol_set_product_id(ProtocolFacade* protocol, product_id_low_t product_id_legacy, unsigned int param = 0, product_id_ext_t* product_id_ext = NULL);
 void spark_protocol_set_product_firmware_version(ProtocolFacade* protocol, product_firmware_version_t product_firmware_version, unsigned int param=0, void* reserved = NULL);
 void spark_protocol_get_product_details(ProtocolFacade* protocol, product_details_t* product_details, void* reserved=NULL);
 

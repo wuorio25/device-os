@@ -33,7 +33,7 @@ extern "C" {
 DYNALIB_BEGIN(communication)
 
 DYNALIB_FN(0, communication, spark_protocol_instance, ProtocolFacade*(void))
-DYNALIB_FN(1, communication, spark_protocol_set_product_id, void(ProtocolFacade*, product_id_t, unsigned, void*))
+DYNALIB_FN(1, communication, spark_protocol_set_product_id, void(ProtocolFacade*, product_id_low_t, unsigned, product_id_ext_t*))
 DYNALIB_FN(2, communication, spark_protocol_set_product_firmware_version, void(ProtocolFacade*, product_firmware_version_t, unsigned, void*))
 DYNALIB_FN(3, communication, spark_protocol_get_product_details, void(ProtocolFacade*, product_details_t*, void*))
 DYNALIB_FN(4, communication, spark_protocol_communications_handlers, void(ProtocolFacade*, CommunicationsHandlers*))

@@ -29,7 +29,8 @@
 
 struct __ApplicationProductID {
     __ApplicationProductID(product_id_t id) {
-        spark_protocol_set_product_id(spark_protocol_instance(), id);
+        product_id_ext_t product_id_ext = { product_id: id };
+        spark_protocol_set_product_id(spark_protocol_instance(), id, 0, &product_id_ext);
     }
 };
 
@@ -44,7 +45,7 @@ struct __ApplicationProductVersion {
 #endif
 
 #if PLATFORM_ID!=3
-#define PRODUCT_ID(x)           __ApplicationProductID __appProductID(x); __attribute__((externally_visible, section(".modinfo.product_id"))) uint16_t __system_product_id = (x);
+#define PRODUCT_ID(x)           __ApplicationProductID __appProductID(x); __attribute__((externally_visible, section(".modinfo.product_id"))) product_id_high_t __system_product_id_high = (x) >> 16; __attribute__((externally_visible, section(".modinfo.product_id"))) product_id_low_t __system_product_id_low = (x) & 0xFFFF;
 #define PRODUCT_VERSION(x)       __ApplicationProductVersion __appProductVersion(x); __attribute__((externally_visible, section(".modinfo.product_version"))) uint16_t __system_product_version = (x);
 #else
 #define PRODUCT_ID(x)

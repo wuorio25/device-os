@@ -103,7 +103,7 @@ CoAPMessageType::Enum Messages::decodeType(const uint8_t* buf, size_t length)
 }
 
 size_t Messages::hello(uint8_t* buf, message_id_t message_id, uint8_t flags,
-		uint16_t platform_id, uint16_t product_id,
+		uint16_t platform_id, uint32_t product_id,
 		uint16_t product_firmware_version, bool confirmable, const uint8_t* device_id, uint16_t device_id_len)
 {
 	// TODO: why no token? because the response is not sent separately. But really we should use a token for all messages that expect a response.
@@ -114,7 +114,7 @@ size_t Messages::hello(uint8_t* buf, message_id_t message_id, uint8_t flags,
 	buf[4] = 0xb1; // Uri-Path option of length 1
 	buf[5] = 'h';
 	buf[6] = 0xff; // payload marker
-	buf[7] = product_id >> 8;
+	buf[7] = (product_id >> 8) & 0xff;
 	buf[8] = product_id & 0xff;
 	buf[9] = product_firmware_version >> 8;
 	buf[10] = product_firmware_version & 0xff;
@@ -131,6 +131,8 @@ size_t Messages::hello(uint8_t* buf, message_id_t message_id, uint8_t flags,
 			buf[len++] = device_id[i];
 		}
 	}
+	buf[len++] = (product_id >> 24) & 0xff;
+	buf[len++] = (product_id >> 16) & 0xff;
 	return len;
 }
 

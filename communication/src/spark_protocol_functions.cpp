@@ -173,9 +173,9 @@ void spark_protocol_remove_event_handlers(ProtocolFacade* protocol, const char* 
     protocol->remove_event_handlers(event_name);
 }
 
-void spark_protocol_set_product_id(ProtocolFacade* protocol, product_id_t product_id, unsigned, void*) {
+void spark_protocol_set_product_id(ProtocolFacade* protocol, product_id_low_t product_id_legacy, unsigned, product_id_ext_t* product_id_ext) {
     ASSERT_ON_SYSTEM_OR_MAIN_THREAD();
-    protocol->set_product_id(product_id);
+    protocol->set_product_id(product_id_ext ? product_id_ext->product_id : product_id_legacy);
 }
 
 void spark_protocol_set_product_firmware_version(ProtocolFacade* protocol, product_firmware_version_t product_firmware_version, unsigned, void*) {

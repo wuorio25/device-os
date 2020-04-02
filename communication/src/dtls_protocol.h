@@ -65,8 +65,9 @@ public:
 		product_details_t deets;
 		deets.size = sizeof(deets);
 		get_product_details(deets);
+		uint32_t product_id = (deets.product_id_high << 16) | deets.product_id_low;
 		size_t len = Messages::hello(message.buf(), 0,
-				flags, PLATFORM_ID, deets.product_id,
+				flags, PLATFORM_ID, product_id,
 				deets.product_version, true,
 				device_id, sizeof(device_id));
 		return len;

@@ -474,7 +474,8 @@ public:
 	{
 		if (details.size >= 4)
 		{
-			details.product_id = this->product_id;
+			details.product_id_low = this->product_id & 0xFFFF;
+			details.product_id_high = this->product_id >> 16;
 			details.product_version = this->product_firmware_version;
 		}
 	}

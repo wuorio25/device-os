@@ -419,14 +419,15 @@ void WiFiTester::checkWifiSerial(char c) {
         }
         else if ((start = strstr(command, cmd_SET_PRODUCT))) {
             tokenizeCommand(start, parts, 5);
-            long productID = strtoul(parts[1], NULL, 10);
+            unsigned long productID = strtoul(parts[1], NULL, 10);
             if (productID) {
-                spark_protocol_set_product_id(spark_protocol_instance(), productID);
+                product_id_ext_t product_id_ext = { product_id: productID };
+                spark_protocol_set_product_id(spark_protocol_instance(), 0, 0, &product_id_ext);
                 product_details_t details;
                 details.size = sizeof(details);
                 spark_protocol_get_product_details(spark_protocol_instance(), &details);
                 serialPrint("PRODUCT_ID IS NOW ");
-                String id(details.product_id);
+                String id((details.product_id_high << 16) | details.product_id_low);
                 serialPrintln(id.c_str());
             }
 
