@@ -4,7 +4,9 @@
         link_module_info_static_start = .;
         SHORT(0xffff)
         SHORT(0xffff)
-        KEEP(*.o(.modinfo.product_id))
+        SHORT(0xffff)
+        KEEP(*.o(.modinfo.product_id_high))
+        KEEP(*.o(.modinfo.product_id_low))
         KEEP(*.o(.modinfo.product_version))
 
         link_module_info_suffix_start = .;
