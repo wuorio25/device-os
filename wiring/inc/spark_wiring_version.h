@@ -30,7 +30,7 @@
 struct __ApplicationProductID {
     __ApplicationProductID(product_id_t id) {
         product_id_ext_t product_id_ext = { product_id: id };
-        spark_protocol_set_product_id(spark_protocol_instance(), id, 0, &product_id_ext);
+        spark_protocol_set_product_id(spark_protocol_instance(), 0, 0, &product_id_ext);
     }
 };
 
