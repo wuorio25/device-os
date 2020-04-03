@@ -357,7 +357,7 @@ int Protocol::begin()
 const auto HELLO_FLAG_OTA_UPGRADE_SUCCESSFUL = 1;
 const auto HELLO_FLAG_DIAGNOSTICS_SUPPORT = 2;
 const auto HELLO_FLAG_IMMEDIATE_UPDATES_SUPPORT = 4;
-const auto HELLO_FLAG_EXTENDED_PRODUCT_ID = 8;
+const auto HELLO_FLAG_EXTENDED_PRODUCT_ID = 64;
 
 /**
  * Send the hello message over the channel.

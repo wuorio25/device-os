@@ -17,15 +17,19 @@ extern "C" {
 typedef enum ProductStoreIndex
 {
     /**
-     * The persisted Product ID, 0xFFFF if none set.
+     * The persisted low word Product ID, 0xFFFF if none set.
      */
-    PRODUCT_STORE_ID = 0,
+    PRODUCT_STORE_ID_LOW = 0,
 
     /**
      * The persisted product version. 0xFFFF if none set.
      */
-    PRODUCT_STORE_VERSION = 1
+    PRODUCT_STORE_VERSION = 1,
 
+    /**
+     * The persisted high word Product ID, 0xFFFF if none set.
+     */
+    PRODUCT_STORE_ID_HIGH = 2
 
 } ProductStoreIndex;
 

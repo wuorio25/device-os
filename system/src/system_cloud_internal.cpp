@@ -866,16 +866,24 @@ void Spark_Protocol_Init(void)
         // User code was run, so persist the current values stored in the comms lib.
         // These will either have been left as default or overridden via PRODUCT_ID/PRODUCT_VERSION macros
         if (system_mode()!=SAFE_MODE) {
-            HAL_SetProductStore(PRODUCT_STORE_ID, info.product_id);
+            HAL_SetProductStore(PRODUCT_STORE_ID_LOW, info.product_id_low);
+            HAL_SetProductStore(PRODUCT_STORE_ID_HIGH, info.product_id_high);
             HAL_SetProductStore(PRODUCT_STORE_VERSION, info.product_version);
         }
         else {      // user code was not executed, use previously persisted values
-            info.product_id = HAL_GetProductStore(PRODUCT_STORE_ID);
+            info.product_id_low = HAL_GetProductStore(PRODUCT_STORE_ID_LOW);
+            info.product_id_high = HAL_GetProductStore(PRODUCT_STORE_ID_HIGH);
             info.product_version = HAL_GetProductStore(PRODUCT_STORE_VERSION);
-            if (info.product_id!=0xFFFF)
-                spark_protocol_set_product_id(sp, info.product_id);
-            if (info.product_version!=0xFFFF)
+            if (info.product_id_low != 0xFFFF) {
+                if (info.product_id_high == 0xFFFF) {
+                    info.product_id_high = 0;
+                }
+                product_id_ext_t product_id_ext = { product_id: (product_id_t)(info.product_id_high << 16) | info.product_id_low };
+                spark_protocol_set_product_id(sp, 0, 0, &product_id_ext);
+            }
+            if (info.product_version != 0xFFFF) {
                 spark_protocol_set_product_firmware_version(sp, info.product_version);
+            }
         }
 
 #if HAL_PLATFORM_CLOUD_UDP

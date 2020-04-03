@@ -45,7 +45,7 @@ struct __ApplicationProductVersion {
 #endif
 
 #if PLATFORM_ID!=3
-#define PRODUCT_ID(x)           __ApplicationProductID __appProductID(x); __attribute__((externally_visible, section(".modinfo.product_id"))) product_id_high_t __system_product_id_high = (x) >> 16; __attribute__((externally_visible, section(".modinfo.product_id"))) product_id_low_t __system_product_id_low = (x) & 0xFFFF;
+#define PRODUCT_ID(x)           __ApplicationProductID __appProductID(x); __attribute__((externally_visible, section(".modinfo.product_id_high"))) product_id_high_t __system_product_id_high = (x) >> 16; __attribute__((externally_visible, section(".modinfo.product_id_low"))) product_id_low_t __system_product_id_low = (x) & 0xFFFF;
 #define PRODUCT_VERSION(x)       __ApplicationProductVersion __appProductVersion(x); __attribute__((externally_visible, section(".modinfo.product_version"))) uint16_t __system_product_version = (x);
 #else
 #define PRODUCT_ID(x)
