@@ -156,6 +156,7 @@ int SaraNcpClient::init(const NcpClientConfig& conf) {
     ready_ = false;
     registrationTimeout_ = REGISTRATION_TIMEOUT;
     resetRegistrationState();
+    ncpPowerState(modemPowerState() ? NcpPowerState::ON : NcpPowerState::OFF);
     return 0;
 }
 
@@ -321,7 +322,10 @@ int SaraNcpClient::off() {
     // Disable voltage translator
     modemSetUartState(false);
     // Power down
-    modemPowerOff();
+    // Try using AT command to turn off the modem first.
+    if (modemSoftPowerOff() != 0) {
+        modemPowerOff();
+    }
     ready_ = false;
     ncpState(NcpState::OFF);
     return 0;
@@ -354,6 +358,10 @@ void SaraNcpClient::disable() {
 
 NcpState SaraNcpClient::ncpState() {
     return ncpState_;
+}
+
+NcpPowerState SaraNcpClient::ncpPowerState() {
+    return pwrState_;
 }
 
 int SaraNcpClient::disconnect() {
@@ -1425,6 +1433,17 @@ void SaraNcpClient::ncpState(NcpState state) {
     }
 }
 
+void SaraNcpClient::ncpPowerState(NcpPowerState state) {
+    pwrState_ = state;
+    const auto handler = conf_.eventHandler();
+    if (handler) {
+        NcpPowerStateChangedEvent event = {};
+        event.type = NcpEvent::POWER_STATE_CHANGED;
+        event.state = pwrState_;
+        handler(event, conf_.eventHandlerData());
+    }
+}
+
 void SaraNcpClient::connectionState(NcpConnectionState state) {
     if (ncpState_ == NcpState::DISABLED) {
         return;
@@ -1587,7 +1606,7 @@ int SaraNcpClient::modemInit() const {
     return 0;
 }
 
-int SaraNcpClient::modemPowerOn() const {
+int SaraNcpClient::modemPowerOn() {
     if (!modemPowerState()) {
         LOG(TRACE, "Powering modem on");
         // Perform power-on sequence depending on the NCP type
@@ -1618,6 +1637,7 @@ int SaraNcpClient::modemPowerOn() const {
         }
         if (powerGood) {
             LOG(TRACE, "Modem powered on");
+            ncpPowerState(NcpPowerState::ON);
         } else {
             LOG(ERROR, "Failed to power on modem");
         }
@@ -1686,6 +1706,7 @@ int SaraNcpClient::modemPowerOff() {
         }
         if (!powerGood) {
             LOG(TRACE, "Modem powered off");
+            ncpPowerState(NcpPowerState::OFF);
         } else {
             LOG(ERROR, "Failed to power off modem");
         }
@@ -1694,6 +1715,22 @@ int SaraNcpClient::modemPowerOff() {
     }
 
     CHECK_TRUE(!modemPowerState(), SYSTEM_ERROR_INVALID_STATE);
+    return 0;
+}
+
+int SaraNcpClient::modemSoftPowerOff() {
+    if (modemPowerState()) {
+        LOG(TRACE, "Powering modem off using AT command");
+        int r = CHECK_PARSER(parser_.execCommand("AT+CPWROFF"));
+        if (r == AtResponse::OK) {
+            // WARN: We assume that the modem can turn off itself reliably.
+            ncpPowerState(NcpPowerState::OFF);
+        } else {
+            return SYSTEM_ERROR_AT_NOT_OK;
+        }
+    } else {
+        LOG(TRACE, "Modem already off");
+    }
     return 0;
 }
 
@@ -1734,6 +1771,8 @@ int SaraNcpClient::modemHardReset(bool powerOff) {
         if (!powerOff) {
             LOG(TRACE, "Powering on the modem after the hard reset");
             return modemPowerOn();
+        } else {
+            ncpPowerState(NcpPowerState::OFF);
         }
     }
     return 0;
