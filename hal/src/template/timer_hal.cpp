@@ -58,3 +58,8 @@ uint64_t hal_timer_millis(void* reserved)
 {
   return 0;
 }
+
+uint64_t hal_timer_micros(void* reserved)
+{
+  return 0;
+}

@@ -3,6 +3,7 @@
 #       based on the root of the project
 HAL_SRC_GCC_PATH = $(TARGET_HAL_PATH)/src/gcc
 INCLUDE_DIRS += $(HAL_SRC_GCC_PATH)
+INCLUDE_DIRS += $(HAL_MODULE_PATH)/network/util
 
 ifneq (,$(findstring hal,$(MAKE_DEPENDENCIES)))
 

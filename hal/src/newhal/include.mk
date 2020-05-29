@@ -5,6 +5,7 @@
 HAL_SRC_NEWHAL_PATH = $(TARGET_HAL_PATH)/src/newhal
 
 INCLUDE_DIRS += $(HAL_SRC_NEWHAL_PATH)
+INCLUDE_DIRS += $(HAL_MODULE_PATH)/network/util
 
 HAL_LINK ?= $(findstring hal,$(MAKE_DEPENDENCIES))
 
