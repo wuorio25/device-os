@@ -491,7 +491,7 @@ int MDMParser::waitFinalResp(_CALLBACKPTR cb /* = NULL*/,
                             else if (a == 3) *reg = REG_DENIED;   // 3: registration denied
                             else if (a == 4) *reg = REG_UNKNOWN;  // 4: unknown
                             else if (a == 5) *reg = REG_ROAMING;  // 5: registered, roaming
-                            if (_dev.dev == DEV_SARA_R410 && _attached && *reg == REG_NONE) {
+                            if (_dev.dev == DEV_SARA_R410 && _attached && !strcmp(s, "CEREG:") && *reg == REG_NONE) {
                                 MDM_PRINTF("Cell reg disconnected\r\n");
                                 _attached_urc = (*reg == REG_NONE) ? 0:1;
                                 if (!_attached_urc) { // Regitration detected as 0 or 2
@@ -1613,7 +1613,7 @@ failure:
 }
 
 void MDMParser::_setBandSelectString(MDM_BandSelect &data, char* bands, int index /*= 0*/) {
-    char band[5];
+    char band[6];
     for (int x=index; x<data.count; x++) {
         sprintf(band, "%d", data.band[x]);
         strcat(bands, band);
